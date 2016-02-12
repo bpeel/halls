@@ -107,10 +107,13 @@ frag_shader_source[] =
         "}\n"
         "(webgl_758cdc8b0df6c2a9 = ((webgl_758cdc8b0df6c2a9 - "
         "vec2(0.5, 0.5)) * vec2(webgl_58eb32532f5ee481)));\n"
+
+        /* Delete this section to replicate the fix in the bug report */
         "(webgl_19dff938713edbff = (webgl_19dff938713edbff + "
         "(((webgl_48c57da858454f79 / vec4(8.0, 8.0, 8.0, 8.0)) - "
         "webgl_19dff938713edbff) * (vec4(1.0, 1.0, 1.0, 1.0) - "
         "vec4((webgl_55fdf3cc830b6c33 * 0.5))))));\n"
+
         "(webgl_FragColor = vec4(mix((((webgl_19dff938713edbff.xyz * "
         "webgl_19dff938713edbff.xyz) * vec3(webgl_53848c7f1cf694ac)) + "
         "webgl_19dff938713edbff.xyz), ((webgl_19dff938713edbff.yyy * "
