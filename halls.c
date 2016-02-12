@@ -476,7 +476,7 @@ main(int argc, char **argv)
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-        data.window = SDL_CreateWindow("Finvenkisto",
+        data.window = SDL_CreateWindow("Halls",
                                        SDL_WINDOWPOS_UNDEFINED,
                                        SDL_WINDOWPOS_UNDEFINED,
                                        800, 600,
