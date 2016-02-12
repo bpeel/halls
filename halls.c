@@ -287,6 +287,7 @@ init_program(struct data *data)
 {
         GLuint vert_shader, frag_shader;
         GLuint prog;
+        GLint loc;
 
         vert_shader = create_shader("vert shader",
                                     GL_VERTEX_SHADER,
@@ -317,6 +318,38 @@ init_program(struct data *data)
         }
 
         glUseProgram(prog);
+
+        loc = glGetUniformLocation(prog, "webgl_11d5c59b099a10a2");
+        glUniformMatrix4fv(loc,
+                           1, /* count */
+                           GL_FALSE, /* transpose */
+                           (GLfloat[]) { 0.001953125, 0, 0, 0, 0, 0.003472222,
+                                           0, 0, 0, 0, -0.0001, 0, -0, -0, -0,
+                                           1 });
+        loc = glGetUniformLocation(prog, "webgl_f4376ea35a7e1f46");
+        glUniform1i(loc, 0);
+        loc = glGetUniformLocation(prog, "webgl_9f3d75d0c870cd0a");
+        glUniform1fv(loc, 1, (GLfloat[]) { 1024 });
+        loc = glGetUniformLocation(prog, "webgl_73f8cb2ab947f459");
+        glUniform1fv(loc, 1, (GLfloat[]) { 576 });
+        loc = glGetUniformLocation(prog, "webgl_58eb32532f5ee481");
+        glUniform1fv(loc, 1, (GLfloat[]) { 0.94 });
+        loc = glGetUniformLocation(prog, "webgl_e05f6d076f9b3f32");
+        glUniform1fv(loc, 1, (GLfloat[]) { 0.66 });
+        loc = glGetUniformLocation(prog, "webgl_53848c7f1cf694ac");
+        glUniform1fv(loc, 1, (GLfloat[]) { 0 });
+        loc = glGetUniformLocation(prog, "webgl_b23f3037257feb4b");
+        glUniform1fv(loc, 1, (GLfloat[]) { 1 });
+        loc = glGetUniformLocation(prog, "webgl_da6e391939e86900");
+        glUniform1fv(loc, 1, (GLfloat[]) { 0.3 });
+        loc = glGetUniformLocation(prog, "webgl_c9cd165c64c355df");
+        glUniform1fv(loc, 1, (GLfloat[]) { 0.00161 });
+        loc = glGetUniformLocation(prog, "webgl_f4376ea35a7e1f46");
+        glUniformMatrix4fv(loc,
+                           1, /* count */
+                           GL_FALSE, /* transpose */
+                           (GLfloat[]) { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+                                           1, 0, 0, 0, -600, 1 });
 
         data->program = prog;
 
