@@ -15,3 +15,5 @@ sdl = dependency('sdl2')
 
 executable('halls', ['halls.c'],
            dependencies: [epoxy, sdl])
+executable('test-lines', ['test-lines.c'],
+           dependencies: [epoxy, sdl])
