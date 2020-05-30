@@ -61,6 +61,9 @@ handle_redraw(struct data *data)
 
         glLineWidth(8.0f);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glUseProgram(data->program);
         glBindVertexArray(data->vao);
         glDrawArrays(GL_LINES, 0, 2);
