@@ -66,7 +66,7 @@ handle_redraw(struct data *data)
 
         glUseProgram(data->program);
         glBindVertexArray(data->vao);
-        glDrawArrays(GL_LINES, 0, 2);
+        glDrawArrays(GL_LINE_STRIP, 0, 5);
         SDL_GL_SwapWindow(data->window);
 
         data->redraw_queued = false;
@@ -256,6 +256,9 @@ init_vertices(struct data *data)
         static const GLfloat verts[] = {
                 -0.8f, -0.8f,
                 0.8f, 0.8f,
+                -0.8f, 0.8f,
+                0.8f, -0.8f,
+                -0.8f, -0.8f,
         };
 
         glGenVertexArrays(1, &data->vao);
@@ -303,7 +306,7 @@ main(int argc, char **argv)
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
