@@ -82,9 +82,30 @@ handle_redraw(struct data *data)
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glUseProgram(data->program);
         glBindVertexArray(data->vao);
-        glDrawArrays(GL_LINES, 0, N_LINES * 2);
+
+        for (int y = 0; y < N_LINES_Y; y++) {
+                glUseProgram(y == 0 ? data->program : 0);
+
+                for (int x = 0; x < N_LINES_X; x++) {
+                        if ((x & 1))
+                                glDisable(GL_LINE_SMOOTH);
+                        else
+                                glEnable(GL_LINE_SMOOTH);
+
+                        if (y == 2) {
+                                glDrawArrays(GL_LINES,
+                                             y * N_LINES_X * 2,
+                                             N_LINES_X * 2);
+                                break;
+                        } else {
+                                glDrawArrays(GL_LINES,
+                                             (y * N_LINES_X + x) * 2,
+                                             2);
+                        }
+                }
+        }
+
         SDL_GL_SwapWindow(data->window);
 
         data->redraw_queued = false;
