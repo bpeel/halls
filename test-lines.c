@@ -9,6 +9,24 @@
 #include <string.h>
 #include <errno.h>
 
+/* Padding around the grid of lines */
+#define EDGE_PADDING 0.1f
+/* Padding in-between the lines */
+#define LINE_PADDING 0.2f
+
+#define N_LINES_X 4
+#define N_LINES_Y 3
+#define N_LINES (N_LINES_X * N_LINES_Y)
+
+#define LINE_WIDTH ((2.0f -                             \
+                     EDGE_PADDING * 2 -                 \
+                     LINE_PADDING * (N_LINES_X - 1)) /  \
+                    N_LINES_X)
+#define LINE_HEIGHT ((2.0f -                            \
+                      EDGE_PADDING * 2 -                \
+                      LINE_PADDING * (N_LINES_Y - 1)) / \
+                     N_LINES_Y)
+
 struct data {
         SDL_Window *window;
         SDL_GLContext gl_context;
@@ -66,7 +84,7 @@ handle_redraw(struct data *data)
 
         glUseProgram(data->program);
         glBindVertexArray(data->vao);
-        glDrawArrays(GL_LINE_STRIP, 0, 5);
+        glDrawArrays(GL_LINES, 0, N_LINES * 2);
         SDL_GL_SwapWindow(data->window);
 
         data->redraw_queued = false;
@@ -253,13 +271,20 @@ init_program(struct data *data)
 static void
 init_vertices(struct data *data)
 {
-        static const GLfloat verts[] = {
-                -0.8f, -0.8f,
-                0.8f, 0.8f,
-                -0.8f, 0.8f,
-                0.8f, -0.8f,
-                -0.8f, -0.8f,
-        };
+        GLfloat verts[N_LINES * 4];
+        float *p = verts;
+
+        for (int y = 0; y < N_LINES_Y; y++) {
+                for (int x = 0; x < N_LINES_X; x++) {
+                        p[0] = (EDGE_PADDING - 1.0f +
+                                x * (LINE_WIDTH + LINE_PADDING));
+                        p[1] = (EDGE_PADDING - 1.0f +
+                                y * (LINE_HEIGHT + LINE_PADDING));
+                        p[2] = p[0] + LINE_WIDTH;
+                        p[3] = p[1] + LINE_HEIGHT;
+                        p += 4;
+                }
+        }
 
         glGenVertexArrays(1, &data->vao);
         glBindVertexArray(data->vao);
