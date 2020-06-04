@@ -17,3 +17,5 @@ executable('halls', ['halls.c'],
            dependencies: [epoxy, sdl])
 executable('test-lines', ['test-lines.c'],
            dependencies: [epoxy, sdl])
+executable('test-cull-geom', ['test-cull-geom.c'],
+           dependencies: [epoxy, sdl])
