@@ -13,7 +13,11 @@ main()
 
         gl_Position = gl_in[0].gl_Position;
         EmitVertex();
-        gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        gl_Position = vec4((gl_in[0].gl_Position.xy +
+                            gl_in[1].gl_Position.xy) / 2.0 *
+                           0.5,
+                           0.0,
+                           1.0);
         EmitVertex();
         gl_Position = gl_in[1].gl_Position;
         EmitVertex();
