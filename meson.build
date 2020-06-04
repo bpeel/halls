@@ -12,10 +12,11 @@ endforeach
 
 epoxy = dependency('epoxy')
 sdl = dependency('sdl2')
+math = cc.find_library('m', required : false)
 
 executable('halls', ['halls.c'],
            dependencies: [epoxy, sdl])
 executable('test-lines', ['test-lines.c'],
            dependencies: [epoxy, sdl])
 executable('test-cull-geom', ['test-cull-geom.c'],
-           dependencies: [epoxy, sdl])
+           dependencies: [epoxy, sdl, math])

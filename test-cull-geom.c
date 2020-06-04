@@ -8,14 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
-static const GLfloat
-verts[] = {
-        -0.8f, -0.8f, -0.2f, -0.8f, -0.5f, -0.2f,
-        0.2f, -0.8, 0.8f, -0.8, 0.5f, -0.2,
-        -0.8, 0.2f, -0.2, 0.2f, -0.5, 0.8f,
-        0.2, 0.2f, 0.8, 0.2f, 0.5, 0.8f,
-};
+#define N_VERTS 181
 
 static const struct {
         GLenum type;
@@ -82,9 +77,7 @@ handle_redraw(struct data *data)
 
         glBindVertexArray(data->vao);
 
-        glDrawArrays(GL_TRIANGLES,
-                     0,
-                     (sizeof verts) / (sizeof verts[0]) / 2);
+        glDrawArrays(GL_LINE_STRIP, 0, N_VERTS);
 
         SDL_GL_SwapWindow(data->window);
 
@@ -243,7 +236,6 @@ delete_shaders(size_t n_shaders, GLuint *shaders)
 static bool
 init_program(struct data *data)
 {
-
         GLuint shaders[N_SHADERS];
 
         for (unsigned i = 0; i < N_SHADERS; i++) {
@@ -281,6 +273,15 @@ init_program(struct data *data)
 static void
 init_vertices(struct data *data)
 {
+        GLfloat verts[N_VERTS * 2], *p = verts;
+
+        for (int i = 0; i < N_VERTS; i++) {
+                float angle = i * 2 * M_PI / (N_VERTS - 1);
+                p[0] = -cosf(angle);
+                p[1] = sinf(angle);
+                p += 2;
+        }
+
         glGenVertexArrays(1, &data->vao);
         glBindVertexArray(data->vao);
 
