@@ -10,7 +10,7 @@
 #include <errno.h>
 #include <math.h>
 
-#define N_VERTS 181
+#define N_VERTS 361
 
 static const struct {
         GLenum type;
