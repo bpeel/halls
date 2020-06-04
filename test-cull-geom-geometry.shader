@@ -7,6 +7,10 @@ layout(triangle_strip, max_vertices = 3) out;
 void
 main()
 {
+        /* Skip every odd triangle */
+        if ((gl_PrimitiveIDIn & 1) != 0)
+                return;
+
         gl_Position = gl_in[0].gl_Position;
         EmitVertex();
         gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
