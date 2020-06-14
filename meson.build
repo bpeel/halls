@@ -20,3 +20,5 @@ executable('test-lines', ['test-lines.c'],
            dependencies: [epoxy, sdl])
 executable('test-cull-geom', ['test-cull-geom.c'],
            dependencies: [epoxy, sdl, math])
+executable('lots-gs-input', ['lots-gs-input.c'],
+           dependencies: [epoxy, sdl])
