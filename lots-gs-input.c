@@ -273,13 +273,15 @@ init_program(struct data *data)
 static void
 init_vertices(struct data *data)
 {
-        GLfloat verts[N_VERTS * 2], *p = verts;
+        GLfloat verts[N_VERTS * 4], *p = verts;
 
         for (int y = 0; y < 2; y++) {
                 for (int x = 0; x < 3; x++) {
                         p[0] = x * 0.5f - 0.5f;
                         p[1] = y - 0.5f;
-                        p += 2;
+                        p[2] = 0.0f;
+                        p[3] = 1.0f;
+                        p += 4;
                 }
         }
 
@@ -293,10 +295,10 @@ init_vertices(struct data *data)
         glBufferData(GL_ARRAY_BUFFER, sizeof verts, verts, GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, /* index */
-                              2, /* size */
+                              4, /* size */
                               GL_FLOAT,
                               GL_FALSE, /* normalized */
-                              sizeof (GLfloat) * 2,
+                              sizeof (GLfloat) * 4,
                               (GLvoid *) (GLintptr) 0 /* offset */);
         glEnableVertexAttribArray(0);
 
