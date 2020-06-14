@@ -2,8 +2,10 @@
 
 mediump layout(location = 0) out vec4 color_out;
 
+in highp vec4 fs_color;
+
 void
 main()
 {
-        color_out = vec4(1.0);
+        color_out = fs_color;
 }
