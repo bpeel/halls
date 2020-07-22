@@ -20,6 +20,7 @@ static const struct {
         const char *filename;
 } shader_names[] = {
         { GL_VERTEX_SHADER, "test-prim-count-vertex.shader" },
+        { GL_GEOMETRY_SHADER, "test-prim-count-geometry.shader" },
         { GL_FRAGMENT_SHADER, "test-prim-count-fragment.shader" },
 };
 
