@@ -24,3 +24,5 @@ executable('lots-gs-input', ['lots-gs-input.c'],
            dependencies: [epoxy, sdl])
 executable('test-regs', ['test-regs.c'],
            dependencies: [epoxy, sdl])
+executable('test-prim-count', ['test-prim-count.c'],
+           dependencies: [epoxy, sdl])
