@@ -31,6 +31,7 @@ struct data {
 
         GLuint program;
         GLuint vao, vbo;
+        GLuint qo;
 
         bool quit;
         bool redraw_queued;
@@ -80,9 +81,20 @@ handle_redraw(struct data *data)
         glBindVertexArray(data->vao);
 
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glBeginQuery(GL_PRIMITIVES_GENERATED, data->qo);
+
         glDrawArrays(GL_TRIANGLES, 0, N_VERTS);
 
+        glEndQuery(GL_PRIMITIVES_GENERATED);
+
         SDL_GL_SwapWindow(data->window);
+
+        GLuint n_prims = 55555;
+
+        glGetQueryObjectuiv(data->qo, GL_QUERY_RESULT, &n_prims);
+
+        printf("n_prims = %i\n", n_prims);
 
         data->redraw_queued = false;
 }
@@ -374,7 +386,11 @@ main(int argc, char **argv)
 
         init_vertices(&data);
 
+        glGenQueries(1, &data.qo);
+
         run_main_loop(&data);
+
+        glDeleteQueries(1, &data.qo);
 
         deinit_vertices(&data);
 
