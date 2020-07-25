@@ -26,3 +26,5 @@ executable('test-regs', ['test-regs.c'],
            dependencies: [epoxy, sdl])
 executable('test-prim-count', ['test-prim-count.c'],
            dependencies: [epoxy, sdl])
+executable('slideshow', ['slideshow.c'],
+           dependencies: [epoxy, sdl, math])
