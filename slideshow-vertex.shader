@@ -1,8 +1,6 @@
-#version 310 es
+attribute vec2 pos;
 
-layout(location = 0) in vec2 pos;
-
-mediump out vec2 tex_coord;
+varying mediump vec2 tex_coord;
 
 void
 main()

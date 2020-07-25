@@ -38,7 +38,7 @@ struct data {
         SDL_GLContext gl_context;
 
         GLuint program;
-        GLuint vao, vbo;
+        GLuint vbo;
         GLuint textures[N_TEXTURES];
 
         int last_texture_drawn;
@@ -50,8 +50,8 @@ struct data {
 static SDL_GLContext
 create_gl_context(SDL_Window *window)
 {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                             SDL_GL_CONTEXT_PROFILE_ES);
 
@@ -97,8 +97,6 @@ handle_redraw(struct data *data)
 
         SDL_GetWindowSize(data->window, &w, &h);
         glViewport(0, 0, w, h);
-
-        glBindVertexArray(data->vao);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -321,9 +319,6 @@ init_vertices(struct data *data)
                 1, 1,
         };
 
-        glGenVertexArrays(1, &data->vao);
-        glBindVertexArray(data->vao);
-
         glGenBuffers(1, &data->vbo);
         glBindBuffer(GL_ARRAY_BUFFER, data->vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof verts, verts, GL_STATIC_DRAW);
@@ -337,13 +332,11 @@ init_vertices(struct data *data)
         glEnableVertexAttribArray(0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
 }
 
 static void
 deinit_vertices(struct data *data)
 {
-        glDeleteVertexArrays(1, &data->vao);
         glDeleteBuffers(1, &data->vbo);
 }
 
