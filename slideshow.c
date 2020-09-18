@@ -18,6 +18,13 @@
 #define FB_WIDTH TEX_WIDTH
 #define FB_HEIGHT TEX_HEIGHT
 
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+
+#define SQUARE_SIZE (MIN(TEX_WIDTH, TEX_HEIGHT) / 3)
+#define SQUARE_COLUMNS (TEX_WIDTH / SQUARE_SIZE)
+#define SQUARE_ROWS (TEX_HEIGHT / SQUARE_SIZE)
+
 /* Allocate enough textures to go over 64MB */
 #define N_TEXTURES ((64 * 1024 * 1024) / (TEX_WIDTH * TEX_HEIGHT * 4) + 1)
 
@@ -41,7 +48,7 @@ struct data {
         GLuint vbo;
         GLuint textures[N_TEXTURES];
 
-        int last_texture_drawn;
+        int draw_number;
 
         bool quit;
         bool redraw_queued;
@@ -80,10 +87,46 @@ handle_event(struct data *data,
         }
 }
 
-static int
-get_current_texture(void)
+static void
+add_square_to_texture(struct data *data,
+                      int texture_num,
+                      int square_num)
 {
-        return (SDL_GetTicks() / TEXTURE_TIME) % N_TEXTURES;
+        int x = square_num % SQUARE_COLUMNS * SQUARE_SIZE;
+        int y = (square_num / SQUARE_COLUMNS) % SQUARE_ROWS * SQUARE_SIZE;
+        uint32_t image[SQUARE_SIZE * SQUARE_SIZE];
+        uint32_t texel =
+                SDL_SwapBE32(0xff | (0xff << (((square_num % 3) + 1) * 8)));
+
+        for (size_t i = 0; i < SQUARE_SIZE * SQUARE_SIZE; i++)
+                image[i] = texel;
+
+        glBindTexture(GL_TEXTURE_2D, data->textures[texture_num]);
+        glTexSubImage2D(GL_TEXTURE_2D,
+                        0, /* level */
+                        x, y,
+                        SQUARE_SIZE, SQUARE_SIZE,
+                        GL_RGBA, GL_UNSIGNED_BYTE,
+                        image);
+}
+
+static void
+check_draw_number(struct data *data)
+{
+        int draw_number = SDL_GetTicks() / TEXTURE_TIME;
+
+        if (draw_number == data->draw_number)
+                return;
+
+        for (int i = MAX(data->draw_number, N_TEXTURES);
+             i <= draw_number;
+             i++) {
+                data->draw_number++;
+                add_square_to_texture(data, i % N_TEXTURES, i / N_TEXTURES - 1);
+        }
+
+        data->draw_number = draw_number;
+        data->redraw_queued = true;
 }
 
 static void
@@ -91,9 +134,9 @@ handle_redraw(struct data *data)
 {
         int w, h;
 
-        data->last_texture_drawn = get_current_texture();
+        int texture_num = data->draw_number % N_TEXTURES;
 
-        glBindTexture(GL_TEXTURE_2D, data->textures[data->last_texture_drawn]);
+        glBindTexture(GL_TEXTURE_2D, data->textures[texture_num]);
 
         SDL_GetWindowSize(data->window, &w, &h);
         glViewport(0, 0, w, h);
@@ -114,9 +157,7 @@ run_main_loop(struct data *data)
         bool had_event;
 
         while (!data->quit) {
-                if (!data->redraw_queued &&
-                    get_current_texture() != data->last_texture_drawn)
-                        data->redraw_queued = true;
+                check_draw_number(data);
 
                 if (data->redraw_queued) {
                         had_event = SDL_PollEvent(&event);
