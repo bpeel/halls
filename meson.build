@@ -30,3 +30,5 @@ executable('slideshow', ['slideshow.c'],
            dependencies: [epoxy, sdl, math])
 executable('carrot', ['carrot.c'],
            dependencies: [epoxy, sdl, math])
+executable('test-msaa-copy-teximage', ['test-msaa-copyteximage.c'],
+           dependencies: [epoxy, sdl])
