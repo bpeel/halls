@@ -34,8 +34,8 @@ static const struct {
         GLenum type;
         const char *filename;
 } shader_names[] = {
-        { GL_VERTEX_SHADER, "slideshow-vertex.shader" },
-        { GL_FRAGMENT_SHADER, "slideshow-fragment.shader" },
+        { GL_VERTEX_SHADER, "tex-vertex.shader" },
+        { GL_FRAGMENT_SHADER, "tex-fragment.shader" },
 };
 
 #define N_SHADERS ((sizeof shader_names) / (sizeof shader_names[0]))
