@@ -25,8 +25,8 @@
 #define SQUARE_COLUMNS (TEX_WIDTH / SQUARE_SIZE)
 #define SQUARE_ROWS (TEX_HEIGHT / SQUARE_SIZE)
 
-/* Allocate enough textures to go over 64MB */
-#define N_TEXTURES ((64 * 1024 * 1024) / (TEX_WIDTH * TEX_HEIGHT * 4) + 1)
+/* Allocate enough textures to go over 128MB */
+#define N_TEXTURES ((128 * 1024 * 1024) / (TEX_WIDTH * TEX_HEIGHT * 4) + 1)
 
 #define TEXTURE_TIME 500
 
