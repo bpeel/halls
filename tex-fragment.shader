@@ -1,6 +1,10 @@
-varying mediump vec2 tex_coord;
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-uniform mediump sampler2D tex;
+varying vec2 tex_coord;
+
+uniform sampler2D tex;
 
 void
 main()

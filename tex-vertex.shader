@@ -1,6 +1,10 @@
+#ifdef GL_ES
+precision mediump float;
+#endif
+
 attribute vec2 pos;
 
-varying mediump vec2 tex_coord;
+varying vec2 tex_coord;
 
 void
 main()
