@@ -30,7 +30,7 @@ static const struct {
         GLenum type;
         const char *filename;
 } shader_names[] = {
-        { GL_VERTEX_SHADER, "carrot-vertex.shader" },
+        { GL_VERTEX_SHADER, "tex-vertex.shader" },
         { GL_FRAGMENT_SHADER, "carrot-fragment.shader" },
 };
 
@@ -64,7 +64,7 @@ struct data {
 static SDL_GLContext
 create_gl_context(SDL_Window *window)
 {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                             SDL_GL_CONTEXT_PROFILE_ES);
@@ -123,7 +123,7 @@ update_textures(struct data *data)
                                 0, 0, /* x/yoffset */
                                 TEX_WIDTH / div,
                                 TEX_HEIGHT / div,
-                                GL_RED,
+                                GL_ALPHA,
                                 GL_UNSIGNED_BYTE,
                                 (void *) texture_offsets[i]);
         }
@@ -323,7 +323,7 @@ init_program(struct data *data)
                 glDeleteShader(shaders[i]);
         }
 
-        glBindAttribLocation(prog, 0, "vertex");
+        glBindAttribLocation(prog, 0, "pos");
 
         if (!link_program(prog)) {
                 glDeleteProgram(prog);
@@ -394,11 +394,11 @@ create_texture(int width,
         glBindTexture(GL_TEXTURE_2D, tex);
         glTexImage2D(GL_TEXTURE_2D,
                      0, /* level */
-                     GL_RED,
+                     GL_ALPHA,
                      width,
                      height,
                      0, /* border */
-                     GL_RED,
+                     GL_ALPHA,
                      GL_UNSIGNED_BYTE,
                      NULL);
 
