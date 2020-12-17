@@ -32,3 +32,5 @@ executable('carrot', ['carrot.c'],
            dependencies: [epoxy, sdl, math])
 executable('test-msaa-copy-teximage', ['test-msaa-copyteximage.c'],
            dependencies: [epoxy, sdl])
+executable('huge-texture', ['huge-texture.c'],
+           dependencies: [epoxy, sdl])
