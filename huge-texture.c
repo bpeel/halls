@@ -18,14 +18,16 @@
 
 /* Use 128MB with all the textures */
 #define N_TEXTURES (128 * 1024 * 1024 / (TEX_SIZE * TEX_SIZE * 4))
-#define N_VERTS (N_TEXTURES * 4)
+#define TEXTURES_PER_DRAW (N_TEXTURES / 2)
+#define N_QUADS (N_TEXTURES / TEXTURES_PER_DRAW)
+#define N_VERTS (N_QUADS * 4)
 
 static const struct {
         GLenum type;
         const char *filename;
 } shader_names[] = {
-        { GL_VERTEX_SHADER, "tex-vertex.shader" },
-        { GL_FRAGMENT_SHADER, "tex-fragment.shader" },
+        { GL_VERTEX_SHADER, "huge-vertex.shader" },
+        { GL_FRAGMENT_SHADER, "huge-fragment.shader" },
 };
 
 #define N_SHADERS ((sizeof shader_names) / (sizeof shader_names[0]))
@@ -92,8 +94,12 @@ handle_redraw(struct data *data)
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (int i = 0; i < N_TEXTURES; i++) {
-                glBindTexture(GL_TEXTURE_2D, data->textures[i]);
+        for (int i = 0; i < N_TEXTURES / TEXTURES_PER_DRAW; i++) {
+                for (int j = 0; j < TEXTURES_PER_DRAW; j++) {
+                        GLuint tex = data->textures[i * TEXTURES_PER_DRAW + j];
+                        glActiveTexture(GL_TEXTURE0 + j);
+                        glBindTexture(GL_TEXTURE_2D, tex);
+                }
                 glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
         }
 
@@ -293,7 +299,8 @@ init_program(struct data *data)
                 return false;
         }
 
-        glUniform1i(tex_uniform, 0);
+        for (int i = 0; i < TEXTURES_PER_DRAW; i++)
+                glUniform1i(tex_uniform + i, i);
 
         data->program = prog;
 
@@ -305,9 +312,9 @@ init_vertices(struct data *data)
 {
         GLfloat verts[N_VERTS * 2];
 
-        for (int i = 0; i < N_TEXTURES; i++) {
-                float l = 2 * i / (float) N_TEXTURES - 1.0;
-                float r = l + 2 / (float) N_TEXTURES;
+        for (int i = 0; i < N_QUADS; i++) {
+                float l = 2 * i / (float) N_QUADS - 1.0;
+                float r = l + 2 / (float) N_QUADS;
                 verts[i * 8 + 0] = l;
                 verts[i * 8 + 1] = -1;
                 verts[i * 8 + 2] = r;
