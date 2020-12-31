@@ -55,6 +55,68 @@ create_gl_context(SDL_Window *window)
         return SDL_GL_CreateContext(window);
 }
 
+static GLuint
+create_texture(int width,
+               int height,
+               uint32_t color)
+{
+        GLuint tex;
+
+        glGenTextures(1, &tex);
+        glBindTexture(GL_TEXTURE_2D, tex);
+
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_S,
+                        GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_T,
+                        GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_MIN_FILTER,
+                        GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_MAG_FILTER,
+                        GL_NEAREST);
+
+        uint8_t *tex_data = malloc(width * height * 4);
+
+        color = SDL_SwapBE32(color);
+
+        for (int i = 0; i < width * height; i++)
+                memcpy(tex_data + i * 4, &color, sizeof color);
+
+        glTexImage2D(GL_TEXTURE_2D,
+                     0, /* level */
+                     GL_RGBA,
+                     width,
+                     height,
+                     0, /* border */
+                     GL_RGBA,
+                     GL_UNSIGNED_BYTE,
+                     tex_data);
+
+        free(tex_data);
+
+        return tex;
+}
+
+static void
+init_texture(struct data *data,
+             int tex_num)
+{
+        if (data->textures[tex_num])
+                return;
+
+        int cnum = tex_num % 7 + 1;
+
+        data->textures[tex_num] = create_texture(TEX_SIZE,
+                                                 TEX_SIZE,
+                                                 ((cnum & 1) * 0xff00) |
+                                                 ((cnum & 2) * 0x7f8000) |
+                                                 ((cnum & 4) * 0x3fc00000) |
+                                                 0xff);
+}
+
 static void
 handle_event(struct data *data,
              const SDL_Event *event)
@@ -96,9 +158,13 @@ handle_redraw(struct data *data)
 
         for (int i = 0; i < N_TEXTURES / TEXTURES_PER_DRAW; i++) {
                 for (int j = 0; j < TEXTURES_PER_DRAW; j++) {
-                        GLuint tex = data->textures[i * TEXTURES_PER_DRAW + j];
+                        int tex_num = i * TEXTURES_PER_DRAW + j;
+
                         glActiveTexture(GL_TEXTURE0 + j);
-                        glBindTexture(GL_TEXTURE_2D, tex);
+
+                        init_texture(data, tex_num);
+
+                        glBindTexture(GL_TEXTURE_2D, data->textures[tex_num]);
                 }
                 glDrawArrays(GL_TRIANGLE_STRIP, i * 4, 4);
         }
@@ -346,63 +412,11 @@ deinit_vertices(struct data *data)
         glDeleteBuffers(1, &data->vbo);
 }
 
-static GLuint
-create_texture(int width,
-               int height,
-               uint32_t color)
-{
-        GLuint tex;
-
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D, tex);
-
-        glTexParameteri(GL_TEXTURE_2D,
-                        GL_TEXTURE_WRAP_S,
-                        GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D,
-                        GL_TEXTURE_WRAP_T,
-                        GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D,
-                        GL_TEXTURE_MIN_FILTER,
-                        GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D,
-                        GL_TEXTURE_MAG_FILTER,
-                        GL_NEAREST);
-
-        uint8_t *tex_data = malloc(width * height * 4);
-
-        color = SDL_SwapBE32(color);
-
-        for (int i = 0; i < width * height; i++)
-                memcpy(tex_data + i * 4, &color, sizeof color);
-
-        glTexImage2D(GL_TEXTURE_2D,
-                     0, /* level */
-                     GL_RGBA,
-                     width,
-                     height,
-                     0, /* border */
-                     GL_RGBA,
-                     GL_UNSIGNED_BYTE,
-                     tex_data);
-
-        free(tex_data);
-
-        return tex;
-}
-
 static void
 init_textures(struct data *data)
 {
-        for (int i = 0; i < N_TEXTURES; i++) {
-                int tnum = i % 7 + 1;
-                data->textures[i] = create_texture(TEX_SIZE,
-                                                   TEX_SIZE,
-                                                   ((tnum & 1) * 0xff00) |
-                                                   ((tnum & 2) * 0x7f8000) |
-                                                   ((tnum & 4) * 0x3fc00000) |
-                                                   0xff);
-        }
+        for (int i = 0; i < N_TEXTURES; i++)
+                init_texture(data, i);
 }
 
 static void
@@ -416,7 +430,18 @@ main(int argc, char **argv)
 {
         struct data data;
         int ret = EXIT_SUCCESS;
+        bool delay_create = false;
         int res;
+
+        if (argc > 1) {
+                if (argc != 2 || strcmp(argv[1], "delaycreate")) {
+                        fprintf(stderr, "usage: %s [delaycreate]\n", argv[0]);
+                        ret = EXIT_FAILURE;
+                        goto out;
+                }
+
+                delay_create = true;
+        }
 
         memset(&data, 0, sizeof data);
 
@@ -464,7 +489,8 @@ main(int argc, char **argv)
                 goto out_context;
         }
 
-        init_textures(&data);
+        if (!delay_create)
+                init_textures(&data);
 
         init_vertices(&data);
 
