@@ -43,6 +43,8 @@ struct data {
 
         uint8_t *texture_data;
 
+        int draw_num;
+
         bool quit;
         bool redraw_queued;
 };
@@ -148,7 +150,9 @@ handle_redraw(struct data *data)
 
         for (int i = 0; i < N_TEXTURES / TEXTURES_PER_DRAW; i++) {
                 for (int j = 0; j < TEXTURES_PER_DRAW; j++) {
-                        int tex_num = i * TEXTURES_PER_DRAW + j;
+                        int tex_num = ((i * TEXTURES_PER_DRAW + j +
+                                        data->draw_num) %
+                                       N_TEXTURES);
 
                         glActiveTexture(GL_TEXTURE0 + j);
 
@@ -162,6 +166,7 @@ handle_redraw(struct data *data)
         SDL_GL_SwapWindow(data->window);
 
         data->redraw_queued = false;
+        data->draw_num++;
 }
 
 static void
