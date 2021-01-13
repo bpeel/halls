@@ -47,6 +47,7 @@ struct data {
 
         bool quit;
         bool redraw_queued;
+        bool delay_create;
 };
 
 static SDL_GLContext
@@ -142,6 +143,11 @@ static void
 handle_redraw(struct data *data)
 {
         int w, h;
+
+        if (data->delay_create) {
+                glDeleteTextures(N_TEXTURES, data->textures);
+                memset(data->textures, 0, sizeof data->textures);
+        }
 
         SDL_GetWindowSize(data->window, &w, &h);
         glViewport(0, 0, w, h);
@@ -451,7 +457,6 @@ main(int argc, char **argv)
 {
         struct data data;
         int ret = EXIT_SUCCESS;
-        bool delay_create = false;
         int res;
 
         if (argc > 1) {
@@ -512,7 +517,7 @@ main(int argc, char **argv)
 
         init_texture_data(&data);
 
-        if (!delay_create)
+        if (!data.delay_create)
                 init_textures(&data);
 
         init_vertices(&data);
