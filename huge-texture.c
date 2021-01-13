@@ -136,6 +136,9 @@ handle_event(struct data *data,
                         break;
                 }
                 break;
+        case SDL_MOUSEBUTTONDOWN:
+                data->redraw_queued = true;
+                break;
         }
 }
 
