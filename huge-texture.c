@@ -462,17 +462,18 @@ main(int argc, char **argv)
         int ret = EXIT_SUCCESS;
         int res;
 
-        if (argc > 1) {
-                if (argc != 2 || strcmp(argv[1], "delaycreate")) {
+        memset(&data, 0, sizeof data);
+
+        for (int i = 1; i < argc; i++) {
+                if (!strcmp(argv[i], "delaycreate") ||
+                    !strcmp(argv[i], "createdelay")) {
+                        data.delay_create = true;
+                } else {
                         fprintf(stderr, "usage: %s [delaycreate]\n", argv[0]);
                         ret = EXIT_FAILURE;
                         goto out;
                 }
-
-                delay_create = true;
         }
-
-        memset(&data, 0, sizeof data);
 
         res = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
         if (res < 0) {
