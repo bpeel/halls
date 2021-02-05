@@ -12,6 +12,8 @@ endforeach
 
 epoxy = dependency('epoxy')
 sdl = dependency('sdl2')
+drm = dependency('libdrm')
+
 math = cc.find_library('m', required : false)
 
 executable('halls', ['halls.c'],
@@ -34,3 +36,5 @@ executable('test-msaa-copy-teximage', ['test-msaa-copyteximage.c'],
            dependencies: [epoxy, sdl])
 executable('huge-texture', ['huge-texture.c'],
            dependencies: [epoxy, sdl])
+executable('map-buf', ['map-buf.c'],
+           dependencies: [drm])
