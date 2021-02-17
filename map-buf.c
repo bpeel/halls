@@ -106,6 +106,21 @@ write_pages(char *buf)
                 buf[offset] = 0x42;
 }
 
+static void
+print_pages(char *buf)
+{
+        int xpos = 0;
+
+        /* Print the first two bytes of every eighth page */
+        for (size_t offset = 0; offset < BUF_SIZE; offset += 4096 * 8) {
+                printf("%02x %02x ", buf[offset], buf[offset + 1]);
+                if (++xpos >= 8) {
+                        fputc('\n', stdout);
+                        xpos = 0;
+                }
+        }
+}
+
 static bool
 run_test(int dev_fd)
 {
@@ -114,11 +129,6 @@ run_test(int dev_fd)
 
         if (buf == 0)
                 return false;
-
-        if (!set_label(dev_fd, buf)) {
-                ret = false;
-                goto out;
-        }
 
         void *buf_map = map_buf(dev_fd, buf);
 
@@ -129,6 +139,14 @@ run_test(int dev_fd)
 
         write_pages(buf_map);
 
+        if (!set_label(dev_fd, buf)) {
+                ret = false;
+                goto out_map;
+        }
+
+        print_pages(buf_map);
+
+out_map:
         munmap(buf_map, BUF_SIZE);
 
 out:
