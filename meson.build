@@ -38,3 +38,5 @@ executable('huge-texture', ['huge-texture.c'],
            dependencies: [epoxy, sdl])
 executable('map-buf', ['map-buf.c'],
            dependencies: [drm])
+executable('map-buf-v3d', ['map-buf-v3d.c'],
+           dependencies: [drm])
