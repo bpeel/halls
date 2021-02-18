@@ -40,3 +40,5 @@ executable('map-buf', ['map-buf.c'],
            dependencies: [drm])
 executable('map-buf-v3d', ['map-buf-v3d.c'],
            dependencies: [drm])
+executable('madv-purge-access', ['madv-purge-access.c'],
+           dependencies: [drm])
